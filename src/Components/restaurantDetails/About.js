@@ -2,27 +2,18 @@ import { View, Text, Image } from "react-native";
 import React from "react";
 
 //getting restaurants info from yelp api
-const YelpRestaurantInfo = {
-  price: "$$",
-  review: "1400",
-  rating: "4.5",
-  categories: [{ title: "American" }, { title: "Italian" }],
-  title: "Beachside Bar Bar Bar",
-  image:
-    "https://static.onecms.io/wp-content/uploads/sites/9/2020/04/24/ppp-why-wont-anyone-rescue-restaurants-FT-BLOG0420.jpg",
-};
 
-const { price, review, categories, title, image, rating } = YelpRestaurantInfo;
-const FormatCategories = categories.map((cat, index) => cat.title).join();
-const description = `${FormatCategories} ${
-  price ? "." + price : ""
-}. ${rating}⭐.${review}`;
-
-export default function About() {
+export default function About(props) {
+  const { name, image, price, review, rating, categories } = props.route.params;
+  const formattedCategories = categories.map((cat) => cat.title).join(" • ");
+  const description = `${formattedCategories} ${
+    price ? " • " + price : ""
+  } • 🎫 • ${rating} ⭐ (${review}+)`;
+  console.log();
   return (
     <View>
       <ImageComponent image={image} />
-      <TitleComponent title={title} />
+      <TitleComponent name={name} />
       <DescriptionComponent description={description} />
     </View>
   );
@@ -35,16 +26,23 @@ const TitleComponent = (props) => (
   <Text
     style={{
       fontSize: 29,
-      fontWeight: "bold",
-      marginHorizontal: 15,
+      fontWeight: "600",
       marginTop: 10,
+      marginHorizontal: 15,
     }}
   >
-    {props.title}
+    {props.name}
   </Text>
 );
 const DescriptionComponent = (props) => (
-  <Text style={{ fontSize: 17, marginHorizontal: 15, marginTop: 10 }}>
+  <Text
+    style={{
+      marginTop: 10,
+      marginHorizontal: 15,
+      fontWeight: "400",
+      fontSize: 15.5,
+    }}
+  >
     {props.description}
   </Text>
 );

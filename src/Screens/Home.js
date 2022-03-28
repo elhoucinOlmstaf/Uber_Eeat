@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Divider } from 'react-native-elements';
+import { Divider } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HeaderTabes from "../Components/Home/HeaderTabes";
 import SearchBar from "../Components/Home/SearchBar";
@@ -9,7 +9,7 @@ import BottomTabs from "../Components/Home/BottomTabs";
 import RestaurantItems, {
   localRestaurants,
 } from "../../src/Components/Home/RestaurantItems";
-const Home = () => {
+const Home = ({ navigation }) => {
   const [restaurantData, setRestaurantData] = useState(localRestaurants);
   const [ActiveTab, setActiveTab] = useState("Pickup");
   const YELP_API_KEY =
@@ -47,9 +47,12 @@ const Home = () => {
 
       <ScrollView>
         <Categories />
-        <RestaurantItems restaurantData={restaurantData} />
+        <RestaurantItems
+          restaurantData={restaurantData}
+          navigation={navigation}
+        />
       </ScrollView>
-      <Divider width={1.5}  />
+      <Divider width={1.5} />
       <BottomTabs />
     </SafeAreaView>
   );
