@@ -32,7 +32,7 @@ export default function ViewCart() {
             position: "relative",
           }}
         >
-          <Text style={{ color: "#fff", fontSize: 25 }}>View Cart</Text>
+          <Text style={{ color: "#fff", fontSize: 20 }}>ViewCart</Text>
         </TouchableOpacity>
       </View>
     </View>

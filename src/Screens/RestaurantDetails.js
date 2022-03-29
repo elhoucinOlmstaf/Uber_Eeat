@@ -6,15 +6,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ViewCart from "../Components/restaurantDetails/ViewCart";
 import { Divider } from "react-native-elements";
 
-
 //foods
 
-export default function RestaurantDetails({route}) {
+export default function RestaurantDetails({ route }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <About route={route} />
       <Divider width={1.5} style={{ marginVertical: 10 }} />
-      <MenuItem />
+      <MenuItem restaurantName={route.params.name} />
       <ViewCart />
     </SafeAreaView>
   );
