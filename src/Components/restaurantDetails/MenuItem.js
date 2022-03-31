@@ -1,14 +1,16 @@
 import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Divider } from "react-native-elements";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+
 const Foods = [
   {
     name: "Tagine",
     image_url:
       "https://www.thespruceeats.com/thmb/olofX8vc7tVzGOSn4XCYAspSzHM=/566x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/berber-tagine-1-2718-x-1800-57c500575f9b5855e537715c.jpg",
-    price: "17$",
+    price: "$17.50",
     description:
       "the famous slow-cooked Moroccan stew that takes its name from the traditional ... ",
   },
@@ -16,7 +18,7 @@ const Foods = [
     name: "Chicken ",
     image_url:
       "https://www.thespruceeats.com/thmb/RX6WpePT_WB2rFoYFzzyfgsV2kQ=/566x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Roasted-Chicken-3264-x-2448-56a644a65f9b58b7d0e0c110.jpg",
-    price: "10$",
+    price: "$16.40",
     description:
       "This classic, versatile dish is also one of Morocco's most famous and ubiquitous. ",
   },
@@ -26,7 +28,7 @@ const Foods = [
       "The meat is cooked until buttery tender with saffron, ginger, and onions, ",
     image_url:
       "https://www.thespruceeats.com/thmb/L_r2Yt-WMsZQy5VQgQGedimZKHc=/566x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Tagine-Of-Beef-and-Prunes-2592-x-1944-56a6454c3df78cf7728c305c.jpg",
-    price: "12$",
+    price: "$14.89",
   },
   {
     name: "Kefta Meatball",
@@ -34,7 +36,7 @@ const Foods = [
       "Moroccans like to heartily season their ground beef or lamb (kefta) with cumin, paprika, and herbs",
     image_url:
       "https://www.thespruceeats.com/thmb/Ph-g7zVDU-M2EpGogiCF1wWPqpI=/566x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Kefta_Mkaouara-2_J_Gilman-56a644623df78cf7728c2de3.jpg",
-    price: "30$",
+    price: "$22.33",
   },
   {
     name: "Harira",
@@ -42,7 +44,7 @@ const Foods = [
       "harira is a tomato-based soup laden with lentils and chickpeas",
     image_url:
       "https://www.thespruceeats.com/thmb/4NZHmgq_2Fi3eBqVsaT6x8qEEc4=/566x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/classic-moroccan-harira-soup-2394920.Hero-5b6b411546e0fb0050483664.jpg",
-    price: "19$",
+    price: "$22.22",
   },
   {
     name: "Sardines",
@@ -50,7 +52,7 @@ const Foods = [
       "In Morocco sardines can be found in abundance along the long coastline, making these flavorful little fish extremely affordable",
     image_url:
       "https://www.thespruceeats.com/thmb/dFdUgDSbyVDCJE-kdiWlNEp_4I4=/940x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/moroccan-baked-whole-sardines-recipe-2394638-hero-01-5c7da67146e0fb0001d83dc2.jpg",
-    price: "26$",
+    price: "$23.56",
   },
   {
     name: "Rfissa",
@@ -58,27 +60,27 @@ const Foods = [
       "In Morocco, it takes the form of rfissa, a spectacular presentation of stewed chicken and lentils fragrantly",
     image_url:
       "https://www.thespruceeats.com/thmb/CaraHKNxq761dm8KxmSnn4EKC-U=/566x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/Rfissa-3264-x-2176-56a644a75f9b58b7d0e0c113.jpg",
-    price: "20$",
+    price: "$27.88",
   },
 ];
-const styles = StyleSheet.create({
-  menuItemStyle: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    margin: 15,
-  },
 
-  titleStyle: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-});
 export default function MenuItem({ restaurantName }) {
   const dispatch = useDispatch();
-  const selectItem = (item) => {
+
+  const CartItems = useSelector(
+    (state) => state.cartReducer.selectedItems.items
+  );
+  const IsFoodInCart = (Food, CartItems) =>
+    Boolean(CartItems.find((item) => item.name === Food.name));
+
+  const selectItem = (item, checkboxValue) => {
     dispatch({
       type: "ADD_TO_CART",
-      payload: { ...item, restaurantName: restaurantName },
+      payload: {
+        ...item,
+        restaurantName: restaurantName,
+        checkboxValue: checkboxValue,
+      },
     });
   };
   return (
@@ -90,7 +92,8 @@ export default function MenuItem({ restaurantName }) {
               size={25}
               fillColor="green"
               iconStyle={{ borderColor: "light", borderRadius: 0 }}
-              onPress={() => selectItem(food)}
+              onPress={(checkboxValue) => selectItem(food, checkboxValue)}
+              isChecked={IsFoodInCart(food, CartItems)}
             />
             <FoodInfo food={food} />
             <FoodImage food={food} />
@@ -132,3 +135,16 @@ const FoodImage = (props) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  menuItemStyle: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    margin: 15,
+  },
+
+  titleStyle: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+});
