@@ -1,7 +1,10 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Modal } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import OrderItem from "./OrderItem";
 export default function ViewCart() {
+  const [modalVisible, setModalVisible] = useState(false);
+
   const { items, restaurantName } = useSelector(
     (state) => state.cartReducer.selectedItems
   );
@@ -12,10 +15,86 @@ export default function ViewCart() {
   const ToUSD =
     "$" + total.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 
-  // format total to currency
+  // modal content
+  const ModalContent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "rgba(0,0,0,0.7)",
+          justifyContent: "flex-end",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#fff",
+            padding: 20,
+            height: "60%",
+            borderWidth: 1,
+          }}
+        >
+          <View>
+            <Text
+              style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}
+            >
+              {restaurantName}
+            </Text>
+            {items.map((item, index) => (
+              <OrderItem key={index} item={item} />
+            ))}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 20,
+            }}
+          >
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>SubTotal</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 18 }}>{ToUSD}</Text>
+          </View>
+          <View>
+            <TouchableOpacity
+            onPress={()=>setModalVisible(false)}
+              style={{
+                backgroundColor: "#000",
+                alignSelf: "center",
+                padding: 10,
+                marginTop: 20,
+                width:"50%",
+                borderRadius:20
+              }}
+            >
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  fontSize: 18,
+                  color: "#fff",
+                  fontStyle: "italic",
+                  textAlign:"center"
+                }}
+              >
+                Check Out
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(modalVisible);
+        }}
+      >
+        {ModalContent()}
+      </Modal>
       {total ? (
         <View
           style={{
@@ -36,17 +115,20 @@ export default function ViewCart() {
             }}
           >
             <TouchableOpacity
+              onPress={() => setModalVisible(true)}
               style={{
                 backgroundColor: "#000",
                 padding: 10,
                 alignItems: "center",
                 marginTop: 10,
-                width: 230,
+                width: "50%",
                 borderRadius: 50,
                 position: "relative",
               }}
             >
-              <Text style={{ color: "#fff", fontSize: 20 }}>ViewCart  {ToUSD}</Text>
+              <Text style={{ color: "#fff", fontSize: 20 }}>
+                ViewCart {ToUSD}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
