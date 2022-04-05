@@ -2,10 +2,9 @@ import { View, Text, TouchableOpacity, Modal } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import OrderItem from "./OrderItem";
-import firebase from '../../../firebase'
-export default function ViewCart({navigation}) {
+import firebase from "../../../firebase";
+export default function ViewCart({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
-
 
   const { items, restaurantName } = useSelector(
     (state) => state.cartReducer.selectedItems
@@ -17,16 +16,19 @@ export default function ViewCart({navigation}) {
   const ToUSD =
     "$" + total.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 
-     // add items to firebase
+  // add items to firebase
   const addToFirebase = () => {
     const db = firebase.firestore();
     db.collection("orders").add({
-      items:items,
-      restaurantName:restaurantName,
+      items: items,
+      restaurantName: restaurantName,
       createdAt: new Date(),
     });
     setModalVisible(false);
-    navigation.navigate('OrderCompleted')
+    navigation.navigate("OrderCompleted", {
+      restaurantName: restaurantName,
+      ToUSD: ToUSD,
+    });
   };
 
   // modal content
@@ -69,14 +71,14 @@ export default function ViewCart({navigation}) {
           </View>
           <View>
             <TouchableOpacity
-            onPress={()=>addToFirebase()}
+              onPress={() => addToFirebase()}
               style={{
                 backgroundColor: "#000",
                 alignSelf: "center",
                 padding: 10,
                 marginTop: 20,
-                width:"50%",
-                borderRadius:20
+                width: "50%",
+                borderRadius: 20,
               }}
             >
               <Text
@@ -85,7 +87,7 @@ export default function ViewCart({navigation}) {
                   fontSize: 18,
                   color: "#fff",
                   fontStyle: "italic",
-                  textAlign:"center"
+                  textAlign: "center",
                 }}
               >
                 Check Out
@@ -96,8 +98,6 @@ export default function ViewCart({navigation}) {
       </View>
     );
   };
-
-
 
   return (
     <>
