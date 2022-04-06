@@ -23,6 +23,7 @@ export default function OrderCompleted({navigation , route}) {
       });
   };
 
+
   useEffect(() => {
     GetItems();
   }, []);
